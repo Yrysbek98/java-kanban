@@ -111,7 +111,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<Integer> getSubtasks(int id ) {
+    public ArrayList<Integer> getSubtasks(int id) {
        ArrayList<Integer> subtasksOfEpic = epics.get(id).getSubtasks();
         return new ArrayList<>(subtasksOfEpic);
     }
@@ -144,6 +144,7 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Task> history = historyManager.getHistory();
         return new ArrayList<>(history);
     }
+    
     @Override
     public void remove(int id) {
         historyManager.remove(id);
