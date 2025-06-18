@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/java-kanban.iml" filepath="$PROJECT_DIR$/java-kanban.iml" />
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/test/test.iml" filepath="$PROJECT_DIR$/test/test.iml" />
+=======
+>>>>>>> 8339fd6ccbfde17da873ba58d188c46f71faec5d
     </modules>
   </component>
 </project>
