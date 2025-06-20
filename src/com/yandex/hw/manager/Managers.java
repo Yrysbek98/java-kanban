@@ -5,10 +5,11 @@ import com.yandex.hw.manager.tasks.TaskManager;
 import com.yandex.hw.manager.tasks.InMemoryTaskManager;
 
 public class Managers {
-    public static TaskManager getDefaultTaskManager(){
+    public static TaskManager getDefaultTaskManager() {
         return   new InMemoryTaskManager();
     }
-    public static HistoryManager getDefaultHistoryManager(){
+
+    public static HistoryManager getDefaultHistoryManager() {
         return   new InMemoryHistoryManager();
     }
 }
