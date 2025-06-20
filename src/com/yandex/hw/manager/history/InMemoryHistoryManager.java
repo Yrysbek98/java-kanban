@@ -50,6 +50,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else {
             tail = node.prev;
         }
+        node.prev = null;
+        node.next = null;
     }
 
     @Override
