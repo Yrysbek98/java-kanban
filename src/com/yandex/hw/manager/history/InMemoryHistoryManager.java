@@ -8,18 +8,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final Map<Integer, Node> data = new HashMap<>();
+    private final Map<Integer, Node> nodeMap = new HashMap<>();
     private Node head;
     private Node tail;
 
 
     private static class Node {
-        public Task data;
-        public Node next;
-        public Node prev;
+        private Task value;
+        private Node next;
+        private Node prev;
 
-        public Node(Node prev, Task data, Node next) {
-            this.data = data;
+        private Node(Node prev, Task value, Node next) {
+            this.value = value;
             this.next = next;
             this.prev = prev;
         }
@@ -58,12 +58,12 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         int id = task.getId();
 
-        if (data.containsKey(id)) {
-            removeNode(data.get(id));
-            data.remove(id);
+        if (nodeMap.containsKey(id)) {
+            removeNode(nodeMap.get(id));
+            nodeMap.remove(id);
         }
         Node newNode = linkLast(task);
-        data.put(id, newNode);
+        nodeMap.put(id, newNode);
 
     }
 
@@ -72,7 +72,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         ArrayList<Task> history = new ArrayList<>();
         Node current = head;
         while (current != null) {
-            history.add(current.data);
+            history.add(current.value);
             current = current.next;
         }
         return history;
@@ -80,9 +80,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        if (data.containsKey(id)) {
-            removeNode(data.get(id));
-            data.remove(id);
+        if (nodeMap.containsKey(id)) {
+            removeNode(nodeMap.get(id));
+            nodeMap.remove(id);
         }
     }
 }
