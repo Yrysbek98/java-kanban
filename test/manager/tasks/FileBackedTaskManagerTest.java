@@ -27,12 +27,9 @@ public class FileBackedTaskManagerTest {
     void shouldSaveMultipleTasks() throws IOException {
         File testFile = File.createTempFile("multiSave", ".csv");
         FileBackedTaskManager manager = new FileBackedTaskManager(testFile);
-        Task task = new Task("Task 1", "Description 1", TaskStatus.NEW);
-        Epic epic = new Epic("Epic 1", "Epic Description");
-        Subtask subtask = new Subtask("Subtask 1", "Sub Desc", TaskStatus.IN_PROGRESS, 2);
-        manager.addTask(task);
-        manager.addTask(epic);
-        manager.addTask(subtask);
+        manager.addTask(new Task("Task 1", "Description 1", TaskStatus.NEW));
+        manager.addTask(new Epic("Epic 1", "Epic Description"));
+        manager.addTask(new Subtask("Subtask 1", "Sub Desc", TaskStatus.IN_PROGRESS, 2));
         List<String> lines = Files.readAllLines(testFile.toPath());
         assertEquals(5, lines.size(), "Неверное количество строк в файле");
         assertTrue(lines.get(1).startsWith("1,TASK"), "Неверный формат задачи");
