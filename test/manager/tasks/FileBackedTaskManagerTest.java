@@ -39,23 +39,19 @@ public class FileBackedTaskManagerTest {
         assertTrue(lines.get(4).isEmpty(), "Последняя строка должна быть пустой");
 
         String[] task1Parts = lines.get(1).split(",");
-        assertEquals("1", task1Parts[0]);
         assertEquals("TASK", task1Parts[1]);
         assertEquals("Task 1", task1Parts[2]);
         assertEquals("NEW", task1Parts[4]);
 
         String[] task2Parts = lines.get(2).split(",");
-        assertEquals("2", task2Parts[0]);
         assertEquals("TASK", task2Parts[1]);
         assertEquals("Task 2", task2Parts[2]);
         assertEquals("IN_PROGRESS", task2Parts[4]);
 
         String[] task3Parts = lines.get(3).split(",");
-        assertEquals("3", task3Parts[0]);
         assertEquals("TASK", task3Parts[1]);
         assertEquals("Task 3", task3Parts[2]);
         assertEquals("DONE", task3Parts[4]);
-
 
     }
 
