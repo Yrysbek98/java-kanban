@@ -1,6 +1,5 @@
 package com.yandex.hw.service;
 
-import com.yandex.hw.manager.history.HistoryManager;
 import com.yandex.hw.model.Epic;
 import com.yandex.hw.model.Subtask;
 import com.yandex.hw.model.Task;
