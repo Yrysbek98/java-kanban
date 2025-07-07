@@ -23,6 +23,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public <T extends Task> void addTask(T task) {
         if (task instanceof Epic epic) {
+            if (epic.getSubtasks() == null) {
+                epic.setSubtasks(new ArrayList<>());
+            }
             epic.setId(getNewId());
             epics.put(epic.getId(), epic);
         } else if (task instanceof Subtask subtask) {

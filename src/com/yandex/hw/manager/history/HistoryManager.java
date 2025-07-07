@@ -1,7 +1,6 @@
 package com.yandex.hw.manager.history;
 
 import com.yandex.hw.model.Task;
-
 import java.util.ArrayList;
 
 public interface HistoryManager {
