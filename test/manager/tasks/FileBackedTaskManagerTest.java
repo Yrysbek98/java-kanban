@@ -33,10 +33,14 @@ public class FileBackedTaskManagerTest {
         manager.addTask(new Task("Task 3", "Description 3", TaskStatus.DONE));
 
         List<String> lines = Files.readAllLines(testFile.toPath());
+
         assertEquals(5, lines.size(), "Неверное количество строк в файле");
-        assertTrue(lines.get(1).startsWith("1,TASK"), "Неверный формат задачи");
-        assertTrue(lines.get(2).startsWith("2,TASK"), "Неверный формат эпика");
-        assertTrue(lines.get(3).contains("3,TASK"), "Неверный формат подзадачи");
+
+        assertTrue(lines.get(1).startsWith("1,TASK,Task 1,NEW,Description 1"), "Неверный формат задачи 1");
+        assertTrue(lines.get(2).startsWith("2,TASK,Task 2,IN_PROGRESS,Description 2"), "Неверный формат задачи 2");
+        assertTrue(lines.get(3).startsWith("3,TASK,Task 3,DONE,Description 3"), "Неверный формат задачи 3");
+        assertTrue(lines.get(4).isEmpty(), "Последняя строка должна быть пустой");
+
     }
 
 
