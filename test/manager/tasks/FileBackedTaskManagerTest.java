@@ -8,6 +8,7 @@ import com.yandex.hw.service.TaskStatus;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -32,14 +33,29 @@ public class FileBackedTaskManagerTest {
         manager.addTask(new Task("Task 2", "Description 2", TaskStatus.IN_PROGRESS));
         manager.addTask(new Task("Task 3", "Description 3", TaskStatus.DONE));
 
-        List<String> lines = Files.readAllLines(testFile.toPath());
+        List<String> lines = Files.readAllLines(testFile.toPath(), StandardCharsets.UTF_8);
 
-        assertEquals(5, lines.size(), "Неверное количество строк в файле");
-
-        assertTrue(lines.get(1).startsWith("1,TASK,Task 1,NEW,Description 1"), "Неверный формат задачи 1");
-        assertTrue(lines.get(2).startsWith("2,TASK,Task 2,IN_PROGRESS,Description 2"), "Неверный формат задачи 2");
-        assertTrue(lines.get(3).startsWith("3,TASK,Task 3,DONE,Description 3"), "Неверный формат задачи 3");
+        assertEquals(5, lines.size(), "Неверное количество строк");
         assertTrue(lines.get(4).isEmpty(), "Последняя строка должна быть пустой");
+
+        String[] task1Parts = lines.get(1).split(",");
+        assertEquals("1", task1Parts[0]);
+        assertEquals("TASK", task1Parts[1]);
+        assertEquals("Task 1", task1Parts[2]);
+        assertEquals("NEW", task1Parts[4]);
+
+        String[] task2Parts = lines.get(2).split(",");
+        assertEquals("2", task2Parts[0]);
+        assertEquals("TASK", task2Parts[1]);
+        assertEquals("Task 2", task2Parts[2]);
+        assertEquals("IN_PROGRESS", task2Parts[4]);
+
+        String[] task3Parts = lines.get(3).split(",");
+        assertEquals("3", task3Parts[0]);
+        assertEquals("TASK", task3Parts[1]);
+        assertEquals("Task 3", task3Parts[2]);
+        assertEquals("DONE", task3Parts[4]);
+
 
     }
 
