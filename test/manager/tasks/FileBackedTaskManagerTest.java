@@ -29,7 +29,7 @@ public class FileBackedTaskManagerTest {
         FileBackedTaskManager manager = new FileBackedTaskManager(testFile);
         Task task = new Task("Task 1", "Description 1", TaskStatus.NEW);
         Epic epic = new Epic("Epic 1", "Epic Description");
-        Subtask subtask = new Subtask("Subtask 1", "Sub Desc", TaskStatus.IN_PROGRESS,2);
+        Subtask subtask = new Subtask("Subtask 1", "Sub Desc", TaskStatus.IN_PROGRESS, 2);
         manager.addTask(task);
         manager.addTask(epic);
         manager.addTask(subtask);
