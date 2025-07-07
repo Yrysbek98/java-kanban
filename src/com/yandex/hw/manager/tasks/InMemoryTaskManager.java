@@ -10,7 +10,7 @@ import com.yandex.hw.service.TaskStatus;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class InMemoryTaskManager implements TaskManager {
+public  class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
@@ -201,4 +201,5 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
 
+ //   public abstract <T extends Task>  void addSubtask(T task);
 }
