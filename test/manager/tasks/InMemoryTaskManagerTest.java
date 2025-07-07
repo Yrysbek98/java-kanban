@@ -18,8 +18,8 @@ class InMemoryTaskManagerTest {
         taskManager.addTask(new Task("Обычная задача", "Описание", TaskStatus.IN_PROGRESS));
         taskManager.addTask(new Epic("Первая большая задача", "Описание"));
         taskManager.addTask(new Epic("Вторая основаня задача", "Описание"));
-        int sizeOfTasks = taskManager.getAllTask("Task").size();
-        int sizeOfEpicTasks = taskManager.getAllTask("Epic").size();
+        int sizeOfTasks = taskManager.getAllTask(Task.class).size();
+        int sizeOfEpicTasks = taskManager.getAllTask(Epic.class).size();
         Assertions.assertNotEquals(sizeOfTasks, sizeOfEpicTasks, "У каждого типа задачи должен быть свой отдельный список");
     }
 

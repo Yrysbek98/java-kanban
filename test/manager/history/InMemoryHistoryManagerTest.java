@@ -20,7 +20,7 @@ class InMemoryHistoryManagerTest {
         taskManager.getTaskById(1);
         taskManager.getTaskById(1);
         taskManager.getTaskById(2);
-        int numberOfTasks = taskManager.getAllTask("Epic").size();
+        int numberOfTasks = taskManager.getAllTask(Epic.class).size();
         int actualSizeOfArray = taskManager.getHistory().size();
         Assertions.assertNotEquals(numberOfTasks, actualSizeOfArray, "Неверная реализация метода add()");
     }

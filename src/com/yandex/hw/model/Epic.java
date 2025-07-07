@@ -35,4 +35,8 @@ public class Epic extends Task {
                 "subtasks=" + subtaskIds +
                 '}';
     }
+
+    public void addSubtask(int id) {
+        subtaskIds.add(id);
+    }
 }
