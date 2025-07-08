@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 
 class InMemoryHistoryManagerTest {
-    TaskManager taskManager = Managers.getDefaultTaskManager();
+    TaskManager taskManager = Managers.getDefaultInMemoryTaskManager();
 
     @Test
     void add() {

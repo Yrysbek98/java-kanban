@@ -9,9 +9,12 @@ import com.yandex.hw.service.TaskStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+
 
 class InMemoryTaskManagerTest {
-    TaskManager taskManager = Managers.getDefaultTaskManager();
+
+    TaskManager taskManager = Managers.getDefaultInMemoryTaskManager();
 
     @Test
     void addDifferentTask() {
