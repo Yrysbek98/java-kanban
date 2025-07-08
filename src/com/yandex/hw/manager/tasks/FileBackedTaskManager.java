@@ -86,16 +86,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public Task getTaskById(int id) {
-        super.getTaskById(id);
+        Task task = super.getTaskById(id);
         save();
-        return null;
+        return task;
     }
 
     @Override
     public Task deleteTaskById(int id) {
-        super.deleteTaskById(id);
+        Task task = super.deleteTaskById(id);
         save();
-        return null;
+        return task;
     }
 
     @Override
@@ -106,9 +106,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public ArrayList<Integer> getSubtasks(int id) {
-        super.getSubtasks(id);
+        ArrayList<Integer> subtasks = super.getSubtasks(id);
         save();
-        return null;
+        return subtasks;
     }
 
     private void save() {
