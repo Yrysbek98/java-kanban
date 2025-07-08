@@ -34,6 +34,9 @@ public class InMemoryTaskManager implements TaskManager {
         } else if (task instanceof Subtask subtask) {
             subtask.setId(getNewId());
             Epic epic = epics.get(subtask.getEpicId());
+            if (epic == null) {
+                throw new IllegalArgumentException("Epic с id=" + subtask.getEpicId() + " не найден");
+            }
             ArrayList<Integer> epicSubtaskIds = epic.getSubtasks();
             if (epicSubtaskIds == null) {
                 epicSubtaskIds = new ArrayList<>();
