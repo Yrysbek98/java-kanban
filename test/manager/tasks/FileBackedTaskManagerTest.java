@@ -19,7 +19,7 @@ public class FileBackedTaskManagerTest {
     @Test
     void shouldHandleEmptyFile() throws IOException {
         File emptyFile = File.createTempFile("empty", ".csv");
-        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFile(emptyFile);
+        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(emptyFile);
         assertTrue(loadedManager.getAllTask(Task.class).isEmpty(), "Список задач должен быть пустым");
         assertTrue(loadedManager.getAllTask(Epic.class).isEmpty(), "Список эпиков должен быть пустым");
         assertTrue(loadedManager.getAllTask(Subtask.class).isEmpty(), "Список подзадач должен быть пустым");
