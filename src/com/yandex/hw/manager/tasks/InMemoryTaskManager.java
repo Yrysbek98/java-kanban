@@ -8,25 +8,35 @@ import com.yandex.hw.model.Task;
 import com.yandex.hw.service.TaskStatus;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class InMemoryTaskManager implements TaskManager {
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private static int idCounter = 1;
+    protected final HashMap<Integer, Task> tasks = new HashMap<>();
+    protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+    protected final HashMap<Integer, Epic> epics = new HashMap<>();
+    protected static int idCounter = 1;
 
 
-    private final HistoryManager historyManager = Managers.getDefaultHistoryManager();
+    protected final HistoryManager historyManager = Managers.getDefaultHistoryManager();
 
     @Override
     public <T extends Task> void addTask(T task) {
+        if (task == null) {
+            throw new IllegalArgumentException("Task не может быть null");
+        }
         if (task instanceof Epic epic) {
+            if (epic.getSubtasks() == null) {
+                epic.setSubtasks(new ArrayList<>());
+            }
             epic.setId(getNewId());
             epics.put(epic.getId(), epic);
         } else if (task instanceof Subtask subtask) {
             subtask.setId(getNewId());
             Epic epic = epics.get(subtask.getEpicId());
+            if (epic == null) {
+                throw new IllegalArgumentException("Epic с id=" + subtask.getEpicId() + " не найден");
+            }
             ArrayList<Integer> epicSubtaskIds = epic.getSubtasks();
             if (epicSubtaskIds == null) {
                 epicSubtaskIds = new ArrayList<>();
@@ -86,14 +96,26 @@ public class InMemoryTaskManager implements TaskManager {
         return null;
     }
 
+    /*   @Override
+       public  ArrayList<Task> getAllTask(String type) {
+           return switch (type) {
+               case "Epic" -> new ArrayList<>(epics.values());
+               case "Subtask" -> new ArrayList<>(subtasks.values());
+               case "Task" -> new ArrayList<>(tasks.values());
+               default -> null;
+           };
+       }*/
     @Override
-    public ArrayList<Task> getAllTask(String type) {
-        return switch (type) {
-            case "Epic" -> new ArrayList<>(epics.values());
-            case "Subtask" -> new ArrayList<>(subtasks.values());
-            case "Task" -> new ArrayList<>(tasks.values());
-            default -> null;
-        };
+    public <T extends Task> ArrayList<T> getAllTask(Class<T> taskClass) {
+        if (taskClass == Epic.class) {
+            return new ArrayList<>((Collection<T>) epics.values());
+        } else if (taskClass == Subtask.class) {
+            return new ArrayList<>((Collection<T>) subtasks.values());
+        } else if (taskClass == Task.class) {
+            return new ArrayList<>((Collection<T>) tasks.values());
+        } else {
+            return null;
+        }
     }
 
 
@@ -199,6 +221,5 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setTaskStatus(TaskStatus.IN_PROGRESS);
         }
     }
-
 
 }

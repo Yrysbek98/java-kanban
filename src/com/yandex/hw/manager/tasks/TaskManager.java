@@ -11,7 +11,7 @@ public interface TaskManager {
 
     Task getTaskById(int id);
 
-    ArrayList<Task> getAllTask(String type);
+    <T extends Task> ArrayList<T> getAllTask(Class<T> taskClass);
 
     Task deleteTaskById(int id);
 
@@ -22,4 +22,5 @@ public interface TaskManager {
     ArrayList<Task> getHistory();
 
     void remove(int id);
+
 }

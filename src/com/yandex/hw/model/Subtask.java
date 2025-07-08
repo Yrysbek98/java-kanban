@@ -1,9 +1,11 @@
 package com.yandex.hw.model;
 
 import com.yandex.hw.service.TaskStatus;
+import com.yandex.hw.service.TasksType;
 
 public class Subtask extends Task {
     private Integer epicsId;
+    private TasksType type = TasksType.SUBTASK;
 
     public Subtask(String name, String description, TaskStatus taskStatus, Integer epicId) {
         super(name, description, taskStatus);
@@ -15,11 +17,15 @@ public class Subtask extends Task {
         this.epicsId = epicId;
     }
 
-    public int getEpicId() {
-        return epicsId;
+    public Subtask(int id, TasksType type, String name, String description, TaskStatus taskStatus, Integer epicId) {
+        super(id, name, description, taskStatus);
+        this.type = type;
+        this.epicsId = epicId;
     }
 
-
+    public Integer getEpicId() {
+        return epicsId;
+    }
 
     @Override
     public String toString() {
@@ -30,5 +36,9 @@ public class Subtask extends Task {
                 ", taskStatus=" + getTaskStatus() +
                 ", epicId=" + epicsId +
                 '}';
+    }
+
+    public TasksType getType() {
+        return type;
     }
 }
