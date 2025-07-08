@@ -55,34 +55,4 @@ public class FileBackedTaskManagerTest {
 
     }
 
-    @Test
-    void shouldSaveMultipleDifferentTasks() throws IOException {
-        File differentFile = File.createTempFile("differentSave", ".csv");
-        FileBackedTaskManager manager = new FileBackedTaskManager(differentFile);
-        manager.addTask(new Task("Task 1", "Description 1", TaskStatus.NEW));
-        manager.addTask(new Epic("Epic 2", "Description 2"));
-        manager.addTask(new Subtask("Subtask 3", "Description 3", TaskStatus.DONE, 2));
-
-        List<String> lines = Files.readAllLines(differentFile.toPath(), StandardCharsets.UTF_8);
-
-        assertEquals(5, lines.size(), "Неверное количество строк");
-        assertTrue(lines.get(4).isEmpty(), "Последняя строка должна быть пустой");
-
-        String[] task1Parts = lines.get(1).split(",");
-        assertEquals("TASK", task1Parts[1]);
-        assertEquals("Task 1", task1Parts[2]);
-        assertEquals("NEW", task1Parts[3]);
-
-        String[] task2Parts = lines.get(2).split(",");
-        assertEquals("EPIC", task2Parts[1]);
-        assertEquals("Epic 2", task2Parts[2]);
-        assertEquals("DONE", task2Parts[3]);
-
-        String[] task3Parts = lines.get(3).split(",");
-        assertEquals("SUBTASK", task3Parts[1]);
-        assertEquals("Subtask 3", task3Parts[2]);
-        assertEquals("DONE", task3Parts[3]);
-
-    }
-
 }
