@@ -1,6 +1,7 @@
 package com.yandex.hw.model;
 
 import com.yandex.hw.service.TaskStatus;
+import com.yandex.hw.service.TasksType;
 
 import java.util.Objects;
 
@@ -9,6 +10,8 @@ public class Task {
     private String name;
     private String description;
     private TaskStatus taskStatus;
+    private TasksType type = TasksType.TASK;
+    private Integer epicId;
 
     public Task(String name, String description, TaskStatus taskStatus) {
         this.name = name;
@@ -21,6 +24,16 @@ public class Task {
         this.name = name;
         this.description = description;
         this.taskStatus = taskStatus;
+    }
+
+    public Task(Integer id, TasksType type, String name, String description, TaskStatus taskStatus, Integer epicId) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.taskStatus = taskStatus;
+        this.type = type;
+        this.epicId = epicId;
+
     }
 
     public int getId() {
@@ -77,5 +90,11 @@ public class Task {
                 '}';
     }
 
+    public TasksType getType() {
+        return type;
+    }
 
+    public Integer getEpicId() {
+        return epicId;
+    }
 }

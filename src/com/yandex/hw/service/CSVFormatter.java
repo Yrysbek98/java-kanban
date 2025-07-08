@@ -11,34 +11,32 @@ public class CSVFormatter {
     }
 
     public static String toString(Task task) {
-        TasksType type;
         if (task instanceof Epic) {
-            type = TasksType.EPIC;
             return String.join(",",
                     String.valueOf(task.getId()),
-                    String.valueOf(type),
+                    String.valueOf(task.getType()),
                     task.getName(),
+                    String.valueOf(task.getTaskStatus()),
                     task.getDescription(),
-                    String.valueOf(task.getTaskStatus())
+                    String.valueOf(task.getEpicId() != null ? task.getEpicId() : "")
             );
         } else if (task instanceof Subtask) {
-            type = TasksType.SUBTASK;
             return String.join(",",
                     String.valueOf(task.getId()),
-                    String.valueOf(type),
+                    String.valueOf(task.getType()),
                     task.getName(),
-                    task.getDescription(),
                     String.valueOf(task.getTaskStatus()),
-                    String.valueOf(((Subtask) task).getEpicId())
+                    task.getDescription(),
+                    String.valueOf(task.getEpicId())
             );
         }
-        type = TasksType.TASK;
         return String.join(",",
                 String.valueOf(task.getId()),
-                String.valueOf(type),
+                String.valueOf(task.getType()),
                 task.getName(),
+                String.valueOf(task.getTaskStatus()),
                 task.getDescription(),
-                String.valueOf(task.getTaskStatus())
+                String.valueOf(task.getEpicId() != null ? task.getEpicId() : "")
         );
     }
 
@@ -51,11 +49,11 @@ public class CSVFormatter {
         String description = parts[4].trim();
         int epicId = Integer.parseInt(parts[5].trim());
         if (type == TasksType.EPIC) {
-            return new Epic(id, name, description);
+            return new Epic(id, type, name, description, epicId);
         } else if (type == TasksType.SUBTASK) {
-            return new Subtask(id, name, description, status, epicId);
+            return new Subtask(id, type, name, description, status, epicId);
         }
-        return new Task(id, name, description, status);
+        return new Task(id, type, name, description, status, epicId);
     }
 
 

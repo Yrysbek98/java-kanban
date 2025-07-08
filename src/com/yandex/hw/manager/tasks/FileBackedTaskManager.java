@@ -5,6 +5,7 @@ import com.yandex.hw.model.Epic;
 import com.yandex.hw.model.Subtask;
 import com.yandex.hw.model.Task;
 import com.yandex.hw.service.CSVFormatter;
+import com.yandex.hw.service.TasksType;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -35,9 +36,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                         manager.idCounter = task.getId();
                     }
 
-                    if (task instanceof Epic) {
+                    if (task.getType() == TasksType.EPIC) {
                         manager.epics.put(task.getId(), (Epic) task);
-                    } else if (task instanceof Subtask) {
+                    } else if (task.getType() == TasksType.SUBTASK) {
                         Subtask subtask = (Subtask) task;
                         manager.subtasks.put(subtask.getId(), subtask);
 
