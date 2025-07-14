@@ -1,11 +1,14 @@
 package com.yandex.hw.model;
 
 import com.yandex.hw.service.TaskStatus;
+import com.yandex.hw.service.TasksType;
 
 import java.util.ArrayList;
 
 public class Epic extends Task {
     private ArrayList<Integer> subtaskIds;
+    private Integer epicId;
+    private TasksType type = TasksType.EPIC;
 
     public Epic(String name, String description) {
         super(name, description, TaskStatus.NEW);
@@ -14,6 +17,13 @@ public class Epic extends Task {
 
     public Epic(int id, String name, String description) {
         super(id, name, description, TaskStatus.NEW);
+        this.subtaskIds = new ArrayList<>();
+    }
+
+    public Epic(int id, TasksType type, String name, String description, Integer epicId) {
+        super(id, name, description, TaskStatus.NEW);
+        this.type = type;
+        this.epicId = epicId;
         this.subtaskIds = new ArrayList<>();
     }
 
@@ -34,5 +44,18 @@ public class Epic extends Task {
                 ", taskStatus=" + getTaskStatus() + '\'' +
                 "subtasks=" + subtaskIds +
                 '}';
+    }
+
+    public void addSubtask(int id) {
+        subtaskIds.add(id);
+    }
+
+    public Integer getEpicId() {
+        return epicId;
+    }
+
+    @Override
+    public TasksType getType() {
+        return type;
     }
 }
