@@ -25,8 +25,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public <T extends Task> void addTask(T task) {
-        if (task == null) {
-            throw new IllegalArgumentException("Task не может быть null");
+        if (task == null || checkOverlapTime(task)) {
+            throw new IllegalArgumentException("Task не может быть null или пересекаются время задачи");
         }
         if (task instanceof Epic epic) {
             if (epic.getSubtasks() == null) {
@@ -67,6 +67,8 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setSubtasks(subtasksForEpic);
             epics.put(epic.getId(), epic);
             checkStatusOfEpic(epic);
+            updateStartTimeOfEpic(epic);
+            updateDurationOfEpic(epic);
         } else if (task instanceof Subtask subtask) {
             subtasks.put(subtask.getId(), subtask);
             Epic epic = epics.get(subtask.getEpicId());
@@ -145,6 +147,8 @@ public class InMemoryTaskManager implements TaskManager {
             epicSubtaskIds.remove(index);
             epic.setSubtasks(epicSubtaskIds);
             checkStatusOfEpic(epic);
+            updateStartTimeOfEpic(epic);
+            updateDurationOfEpic(epic);
             subtasks.remove(id);
             idCounter--;
         } else if (tasks.containsKey(id)) {
@@ -215,8 +219,9 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setTaskStatus(TaskStatus.IN_PROGRESS);
         }
     }
+
     @Override
-    public    <T extends Task> LocalDateTime getEndTime(T task) {
+    public <T extends Task> LocalDateTime getEndTime(T task) {
         if (task instanceof Epic epic) {
             ArrayList<Integer> subtasksId = epic.getSubtasks();
             int durationsOfEpic = 0;
@@ -241,7 +246,40 @@ public class InMemoryTaskManager implements TaskManager {
         return LocalDateTime.parse(task.getStartTime()).plusMinutes(task.getDuration());
     }
 
-    public <T extends Task> boolean checkSecond(T task) {
+    private void updateStartTimeOfEpic(Epic epic) {
+        ArrayList<Integer> subtasksId = epic.getSubtasks();
+        LocalDateTime earliestStartTime = null;
+
+        for (int subtaskId : subtasksId) {
+            Subtask subtask = subtasks.get(subtaskId);
+            LocalDateTime subtaskStartTime = LocalDateTime.parse(subtask.getStartTime());
+
+            if (subtaskStartTime != null &&
+                    (earliestStartTime == null || subtaskStartTime.isBefore(earliestStartTime))) {
+                earliestStartTime = subtaskStartTime;
+            }
+        }
+
+        epic.setStartTime(String.valueOf(earliestStartTime));
+    }
+
+    private void updateDurationOfEpic(Epic epic) {
+        ArrayList<Integer> subtasksId = epic.getSubtasks();
+        int totalMinutes = 0;
+
+        for (int subtaskId : subtasksId) {
+            Subtask subtask = subtasks.get(subtaskId);
+            int subtaskDuration = subtask.getDuration();
+
+            if (subtaskDuration != 0) {
+                totalMinutes += subtaskDuration;
+            }
+        }
+
+        epic.setDuration(totalMinutes);
+    }
+
+    public <T extends Task> boolean checkOverlapTime(T task) {
         LocalDateTime start = LocalDateTime.parse(task.getStartTime());
         LocalDateTime end = getEndTime(task);
 
