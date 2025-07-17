@@ -7,9 +7,12 @@ import com.yandex.hw.model.Subtask;
 import com.yandex.hw.model.Task;
 import com.yandex.hw.service.TaskStatus;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Task> tasks = new HashMap<>();
@@ -96,15 +99,6 @@ public class InMemoryTaskManager implements TaskManager {
         return null;
     }
 
-    /*   @Override
-       public  ArrayList<Task> getAllTask(String type) {
-           return switch (type) {
-               case "Epic" -> new ArrayList<>(epics.values());
-               case "Subtask" -> new ArrayList<>(subtasks.values());
-               case "Task" -> new ArrayList<>(tasks.values());
-               default -> null;
-           };
-       }*/
     @Override
     public <T extends Task> ArrayList<T> getAllTask(Class<T> taskClass) {
         if (taskClass == Epic.class) {
@@ -220,6 +214,50 @@ public class InMemoryTaskManager implements TaskManager {
         } else {
             epic.setTaskStatus(TaskStatus.IN_PROGRESS);
         }
+    }
+    @Override
+    public    <T extends Task> LocalDateTime getEndTime(T task) {
+        if (task instanceof Epic epic) {
+            ArrayList<Integer> subtasksId = epic.getSubtasks();
+            int durationsOfEpic = 0;
+            LocalDateTime latestStartTime = null;
+
+            for (int i = 0; i < subtasksId.size(); i++) {
+                Subtask subtask = subtasks.get(subtasksId.get(i));
+                durationsOfEpic += subtask.getDuration();
+
+                if (latestStartTime == null || LocalDateTime.parse(subtask.getStartTime()).isAfter(latestStartTime)) {
+                    latestStartTime = LocalDateTime.parse(subtask.getStartTime());
+                }
+            }
+
+            if (latestStartTime != null) {
+                return latestStartTime.plusMinutes(durationsOfEpic);
+            } else {
+                return null;
+            }
+
+        }
+        return LocalDateTime.parse(task.getStartTime()).plusMinutes(task.getDuration());
+    }
+
+    public <T extends Task> boolean checkSecond(T task) {
+        LocalDateTime start = LocalDateTime.parse(task.getStartTime());
+        LocalDateTime end = getEndTime(task);
+
+        return Stream.concat(
+                        Stream.concat(
+                                tasks.values().stream(),
+                                epics.values().stream()
+                        ),
+                        subtasks.values().stream()
+                )
+                .filter(t -> t.getId() != task.getId())
+                .anyMatch(t -> {
+                    LocalDateTime otherStart = LocalDateTime.parse(t.getStartTime());
+                    LocalDateTime otherEnd = getEndTime(t);
+                    return !(end.isBefore(otherStart) || start.isAfter(otherEnd));
+                });
     }
 
 }

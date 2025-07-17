@@ -2,6 +2,7 @@ package com.yandex.hw.manager.tasks;
 
 import com.yandex.hw.model.Task;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public interface TaskManager {
@@ -22,5 +23,7 @@ public interface TaskManager {
     ArrayList<Task> getHistory();
 
     void remove(int id);
+
+    <T extends Task> LocalDateTime getEndTime(T task);
 
 }
