@@ -93,7 +93,10 @@ public class Task {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", taskStatus=" + taskStatus +
+                ", taskStatus=" + taskStatus + '\'' +
+                ", epicId=" + epicId + '\'' +
+                ", startTime=" + startTime + '\'' +
+                ", duration=" + duration +
                 '}';
     }
 

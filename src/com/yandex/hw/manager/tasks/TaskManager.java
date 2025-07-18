@@ -4,6 +4,7 @@ import com.yandex.hw.model.Task;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.TreeSet;
 
 public interface TaskManager {
     <T extends Task> void addTask(T task);
@@ -25,5 +26,7 @@ public interface TaskManager {
     void remove(int id);
 
     <T extends Task> LocalDateTime getEndTime(T task);
+
+    TreeSet<Task> getPrioritizedTasks();
 
 }

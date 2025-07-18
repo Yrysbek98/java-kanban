@@ -6,9 +6,11 @@ import com.yandex.hw.model.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 public class CSVFormatter {
+
     public static String getHeader() {
         return "id, TYPE, name, status, description, epicId, startTime, duration";
     }
@@ -57,10 +59,10 @@ public class CSVFormatter {
         TaskStatus status = TaskStatus.valueOf(parts[3].trim());
         String description = parts[4].trim();
         int epicId = Integer.parseInt(parts[5].trim());
-        String time =parts[6].trim();
+        String time = parts[6].trim();
         int duration = Integer.parseInt(parts[7]);
         if (type == TasksType.EPIC) {
-            return new Epic(id, type, name, description, epicId,time, duration);
+            return new Epic(id, type, name, description, epicId, time, duration);
         } else if (type == TasksType.SUBTASK) {
             return new Subtask(id, type, name, description, status, epicId, time, duration);
         }

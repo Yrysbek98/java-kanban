@@ -7,11 +7,9 @@ import com.yandex.hw.model.Subtask;
 import com.yandex.hw.model.Task;
 import com.yandex.hw.service.TaskStatus;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class InMemoryTaskManager implements TaskManager {
@@ -19,13 +17,14 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     protected final HashMap<Integer, Epic> epics = new HashMap<>();
     protected static int idCounter = 1;
-
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    protected final TreeSet<Task> priorityTasks = new TreeSet<>(Comparator.comparing((task -> LocalDateTime.parse(task.getStartTime(), formatter))));
 
     protected final HistoryManager historyManager = Managers.getDefaultHistoryManager();
 
     @Override
     public <T extends Task> void addTask(T task) {
-        if (task == null || checkOverlapTime(task)) {
+        if (task == null ) {
             throw new IllegalArgumentException("Task не может быть null или пересекаются время задачи");
         }
         if (task instanceof Epic epic) {
@@ -49,10 +48,12 @@ public class InMemoryTaskManager implements TaskManager {
 
             subtasks.put(subtask.getId(), subtask);
             checkStatusOfEpic(epic);
+
         } else {
             task.setId(getNewId());
             tasks.put(task.getId(), task);
         }
+        priorityTasks.add(task);
     }
 
     @Override
@@ -252,7 +253,7 @@ public class InMemoryTaskManager implements TaskManager {
 
         for (int subtaskId : subtasksId) {
             Subtask subtask = subtasks.get(subtaskId);
-            LocalDateTime subtaskStartTime = LocalDateTime.parse(subtask.getStartTime());
+            LocalDateTime subtaskStartTime = LocalDateTime.parse(subtask.getStartTime(), formatter);
 
             if (subtaskStartTime != null &&
                     (earliestStartTime == null || subtaskStartTime.isBefore(earliestStartTime))) {
@@ -280,7 +281,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public <T extends Task> boolean checkOverlapTime(T task) {
-        LocalDateTime start = LocalDateTime.parse(task.getStartTime());
+        LocalDateTime start = LocalDateTime.parse(task.getStartTime(),formatter);
         LocalDateTime end = getEndTime(task);
 
         return Stream.concat(
@@ -292,10 +293,13 @@ public class InMemoryTaskManager implements TaskManager {
                 )
                 .filter(t -> t.getId() != task.getId())
                 .anyMatch(t -> {
-                    LocalDateTime otherStart = LocalDateTime.parse(t.getStartTime());
+                    LocalDateTime otherStart = LocalDateTime.parse(t.getStartTime(),formatter);
                     LocalDateTime otherEnd = getEndTime(t);
                     return !(end.isBefore(otherStart) || start.isAfter(otherEnd));
                 });
     }
-
+    @Override
+    public TreeSet<Task> getPrioritizedTasks(){
+        return new TreeSet<>(priorityTasks);
+    }
 }
