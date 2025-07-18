@@ -115,6 +115,7 @@ public class Task {
     public void setDuration(int duration) {
         this.duration = duration;
     }
+
     public String getStartTime() {
         return startTime;
     }

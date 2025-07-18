@@ -24,7 +24,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public <T extends Task> void addTask(T task) {
-        if (task == null ) {
+        if (task == null) {
             throw new IllegalArgumentException("Task не может быть null");
         }
         if (task instanceof Epic epic) {
@@ -34,9 +34,9 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setId(getNewId());
             epics.put(epic.getId(), epic);
         } else if (task instanceof Subtask subtask) {
-            if (checkOverlapTime(subtask)){
+            if (checkOverlapTime(subtask)) {
                 throw new IllegalArgumentException("Перекрытия по времени");
-            }else {
+            } else {
                 subtask.setId(getNewId());
                 Epic epic = epics.get(subtask.getEpicId());
                 if (epic == null) {
@@ -55,9 +55,9 @@ public class InMemoryTaskManager implements TaskManager {
                 updateDurationOfEpic(epic);
             }
         } else {
-            if(checkOverlapTime(task)){
+            if (checkOverlapTime(task)) {
                 throw new IllegalArgumentException("Перекрытия по времени");
-            }else {
+            } else {
                 task.setId(getNewId());
                 tasks.put(task.getId(), task);
             }
@@ -89,6 +89,8 @@ public class InMemoryTaskManager implements TaskManager {
             }
             epicSubtaskIds.add(subtask.getId());
             checkStatusOfEpic(epic);
+            updateStartTimeOfEpic(epic);
+            updateDurationOfEpic(epic);
         } else {
             tasks.put(task.getId(), task);
         }
@@ -232,6 +234,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public TreeSet<Task> getPrioritizedTasks() {
+        return new TreeSet<>(priorityTasks);
+    }
+
+    @Override
     public <T extends Task> LocalDateTime getEndTime(T task) {
         if (task instanceof Epic epic) {
             ArrayList<Integer> subtasksId = epic.getSubtasks();
@@ -242,7 +249,7 @@ public class InMemoryTaskManager implements TaskManager {
                 Subtask subtask = subtasks.get(subtasksId.get(i));
                 durationsOfEpic += subtask.getDuration();
 
-                if (latestStartTime == null || LocalDateTime.parse(subtask.getStartTime(),formatter).isAfter(latestStartTime)) {
+                if (latestStartTime == null || LocalDateTime.parse(subtask.getStartTime(), formatter).isAfter(latestStartTime)) {
                     latestStartTime = LocalDateTime.parse(subtask.getStartTime(), formatter);
                 }
             }
@@ -270,8 +277,12 @@ public class InMemoryTaskManager implements TaskManager {
                 earliestStartTime = subtaskStartTime;
             }
         }
+        if (earliestStartTime == null){
+            epic.setStartTime(null);
+        }else {
+            epic.setStartTime(earliestStartTime.format(formatter));
+        }
 
-        epic.setStartTime(earliestStartTime.format(formatter));
     }
 
     private void updateDurationOfEpic(Epic epic) {
@@ -290,8 +301,8 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setDuration(totalMinutes);
     }
 
-    public <T extends Task> boolean checkOverlapTime(T task) {
-        LocalDateTime start = LocalDateTime.parse(task.getStartTime(),formatter);
+    private <T extends Task> boolean checkOverlapTime(T task) {
+        LocalDateTime start = LocalDateTime.parse(task.getStartTime(), formatter);
         LocalDateTime end = getEndTime(task);
 
         return Stream.concat(
@@ -312,13 +323,10 @@ public class InMemoryTaskManager implements TaskManager {
                     return true;
                 })
                 .anyMatch(t -> {
-                    LocalDateTime otherStart = LocalDateTime.parse(t.getStartTime(),formatter);
+                    LocalDateTime otherStart = LocalDateTime.parse(t.getStartTime(), formatter);
                     LocalDateTime otherEnd = getEndTime(t);
                     return !(end.isBefore(otherStart) || start.isAfter(otherEnd));
                 });
     }
-    @Override
-    public TreeSet<Task> getPrioritizedTasks(){
-        return new TreeSet<>(priorityTasks);
-    }
+
 }
