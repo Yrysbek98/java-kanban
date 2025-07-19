@@ -12,28 +12,35 @@ public class Task {
     private TaskStatus taskStatus;
     private TasksType type = TasksType.TASK;
     private Integer epicId;
+    private String startTime;
+    private int duration;
 
-    public Task(String name, String description, TaskStatus taskStatus) {
+    public Task(String name, String description, TaskStatus taskStatus, String startTime, int duration) {
         this.name = name;
         this.description = description;
         this.taskStatus = taskStatus;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
-    public Task(Integer id, String name, String description, TaskStatus taskStatus) {
+    public Task(Integer id, String name, String description, TaskStatus taskStatus, String startTime, int duration) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.taskStatus = taskStatus;
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
-    public Task(Integer id, TasksType type, String name, String description, TaskStatus taskStatus, Integer epicId) {
+    public Task(Integer id, TasksType type, String name, String description, TaskStatus taskStatus, Integer epicId, String startTime, int duration) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.taskStatus = taskStatus;
         this.type = type;
         this.epicId = epicId;
-
+        this.startTime = startTime;
+        this.duration = duration;
     }
 
     public int getId() {
@@ -86,7 +93,10 @@ public class Task {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", taskStatus=" + taskStatus +
+                ", taskStatus=" + taskStatus + '\'' +
+                ", epicId=" + epicId + '\'' +
+                ", startTime=" + startTime + '\'' +
+                ", duration=" + duration +
                 '}';
     }
 
@@ -96,5 +106,21 @@ public class Task {
 
     public Integer getEpicId() {
         return epicId;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
     }
 }
