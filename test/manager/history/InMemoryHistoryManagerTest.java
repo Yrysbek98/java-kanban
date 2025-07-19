@@ -1,8 +1,6 @@
 package manager.history;
 
 
-import com.yandex.hw.manager.Managers;
-import com.yandex.hw.manager.history.HistoryManager;
 import com.yandex.hw.manager.tasks.InMemoryTaskManager;
 import com.yandex.hw.manager.tasks.TaskManager;
 import com.yandex.hw.model.Epic;
@@ -12,7 +10,6 @@ import manager.TaskManagerTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 class InMemoryHistoryManagerTest extends TaskManagerTest {

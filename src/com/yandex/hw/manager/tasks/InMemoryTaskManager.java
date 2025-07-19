@@ -277,9 +277,9 @@ public class InMemoryTaskManager implements TaskManager {
                 earliestStartTime = subtaskStartTime;
             }
         }
-        if (earliestStartTime == null){
+        if (earliestStartTime == null) {
             epic.setStartTime(null);
-        }else {
+        } else {
             epic.setStartTime(earliestStartTime.format(formatter));
         }
 

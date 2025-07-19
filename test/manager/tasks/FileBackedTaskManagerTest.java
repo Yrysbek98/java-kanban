@@ -1,6 +1,9 @@
 package manager.tasks;
 
+import com.yandex.hw.exceptions.ManagerSaveException;
+import com.yandex.hw.manager.Managers;
 import com.yandex.hw.manager.tasks.FileBackedTaskManager;
+import com.yandex.hw.manager.tasks.TaskManager;
 import com.yandex.hw.model.Epic;
 import com.yandex.hw.model.Subtask;
 import com.yandex.hw.model.Task;
@@ -81,7 +84,7 @@ public class FileBackedTaskManagerTest extends TaskManagerTest {
         Assertions.assertEquals(indexOfAfterDelete, indexOfSubtask, " Неправильная реализация метода checkIDofSubtaskAfterDelete");
     }
 
-   @Test
+    @Test
     void shouldHandleEmptyFile() throws IOException {
         File emptyFile = File.createTempFile("empty", ".csv");
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(emptyFile);
@@ -90,16 +93,32 @@ public class FileBackedTaskManagerTest extends TaskManagerTest {
         assertTrue(loadedManager.getAllTask(Subtask.class).isEmpty(), "Список подзадач должен быть пустым");
     }
 
-
     @Test
-    public void checkOverlapTime() {
-        assertThrows(ArithmeticException.class, () -> {
-            int a = 10 / 0;
-        }, "Деление на ноль должно приводить к исключению");
+    void addNullTask() throws IOException {
+        File nullFile = File.createTempFile("nullAdd", ".csv");
+        TaskManager taskManager = Managers.getDefaultTaskManager(nullFile);
 
+        ManagerSaveException exception = assertThrows(ManagerSaveException.class, () -> {
+            taskManager.addTask(null);
+        });
 
+        assertEquals("Ошибка при добавлении task", exception.getMessage());
     }
 
+    @Test
+    void checkOverlapTime() throws IOException {
+        File overlapFile = File.createTempFile("overlap", ".csv");
+        TaskManager taskManager = Managers.getDefaultTaskManager(overlapFile);
+        Task task1 = new Task("task1", "same time", TaskStatus.IN_PROGRESS, "12-05-2025 12:00", 30);
+        Task task2 = new Task("task2", "same time", TaskStatus.NEW, "12-05-2025 12:00", 45);
+        ManagerSaveException exception = assertThrows(ManagerSaveException.class, () -> {
+            taskManager.addTask(task1);
+            taskManager.addTask(task2);
+        });
+
+        assertEquals("Ошибка при добавлении task", exception.getMessage());
+
+    }
 
 
 }
