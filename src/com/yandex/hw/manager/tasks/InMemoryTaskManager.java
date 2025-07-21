@@ -63,7 +63,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
 
         }
-        //   priorityTasks.add(task);
+        priorityTasks.add(task);
     }
 
     @Override
@@ -150,7 +150,6 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task deleteTaskById(int id) {
         if (epics.containsKey(id)) {
-            idCounter--;
             return epics.remove(id);
         } else if (subtasks.containsKey(id)) {
             Subtask subtask = subtasks.get(id);
@@ -163,9 +162,7 @@ public class InMemoryTaskManager implements TaskManager {
             updateStartTimeOfEpic(epic);
             updateDurationOfEpic(epic);
             subtasks.remove(id);
-            idCounter--;
         } else if (tasks.containsKey(id)) {
-            idCounter--;
             return tasks.remove(id);
         }
         return null;
@@ -273,7 +270,7 @@ public class InMemoryTaskManager implements TaskManager {
             LocalDateTime subtaskStartTime = LocalDateTime.parse(subtask.getStartTime(), formatter);
 
             if (subtaskStartTime != null &&
-                    (earliestStartTime == null || subtaskStartTime.isAfter(earliestStartTime))) {
+                    (earliestStartTime == null || subtaskStartTime.isBefore(earliestStartTime))) {
                 earliestStartTime = subtaskStartTime;
             }
         }
