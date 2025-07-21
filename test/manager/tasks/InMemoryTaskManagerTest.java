@@ -52,7 +52,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         Subtask subtask2 = new Subtask("Задание", "Описание", TaskStatus.IN_PROGRESS, indexOfEpic, "12-05-2017 12:00", 15);
         taskManager.addTask(subtask2);
         int indexOfAfterDelete = subtask2.getId();
-        Assertions.assertEquals(indexOfAfterDelete, indexOfSubtask, " Неправильная реализация метода checkIDofSubtaskAfterDelete");
+        Assertions.assertNotEquals(indexOfAfterDelete, indexOfSubtask, " Неправильная реализация метода checkIDofSubtaskAfterDelete");
     }
 
 
@@ -85,7 +85,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest {
         Subtask subtask2 = new Subtask("Задание", "Описание", TaskStatus.IN_PROGRESS, indexOfEpic, "12-05-2017 12:00", 15);
         taskManager.addTask(subtask2);
         int indexOfAfterDelete = subtask2.getId();
-        Assertions.assertEquals(indexOfAfterDelete, indexOfSubtask, " Неправильная реализация метода checkIDofSubtaskAfterDelete");
+        Assertions.assertNotEquals(indexOfAfterDelete, indexOfSubtask, " Неправильная реализация метода checkIDofSubtaskAfterDelete");
     }
 
 

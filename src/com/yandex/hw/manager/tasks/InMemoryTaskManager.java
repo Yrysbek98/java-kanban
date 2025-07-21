@@ -50,9 +50,11 @@ public class InMemoryTaskManager implements TaskManager {
                 epic.setSubtasks(epicSubtaskIds);
 
                 subtasks.put(subtask.getId(), subtask);
+                priorityTasks.add(subtask);
                 checkStatusOfEpic(epic);
                 updateStartTimeOfEpic(epic);
                 updateDurationOfEpic(epic);
+
             }
         } else {
             if (checkOverlapTime(task)) {
@@ -60,10 +62,10 @@ public class InMemoryTaskManager implements TaskManager {
             } else {
                 task.setId(getNewId());
                 tasks.put(task.getId(), task);
+                priorityTasks.add(task);
             }
 
         }
-        priorityTasks.add(task);
     }
 
     @Override
@@ -265,6 +267,7 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Integer> subtasksId = epic.getSubtasks();
         LocalDateTime earliestStartTime = null;
 
+
         for (int subtaskId : subtasksId) {
             Subtask subtask = subtasks.get(subtaskId);
             LocalDateTime subtaskStartTime = LocalDateTime.parse(subtask.getStartTime(), formatter);
@@ -278,6 +281,7 @@ public class InMemoryTaskManager implements TaskManager {
             epic.setStartTime(null);
         } else {
             epic.setStartTime(earliestStartTime.format(formatter));
+            priorityTasks.add(epic);
         }
 
     }
