@@ -267,7 +267,6 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Integer> subtasksId = epic.getSubtasks();
         LocalDateTime earliestStartTime = null;
 
-
         for (int subtaskId : subtasksId) {
             Subtask subtask = subtasks.get(subtaskId);
             LocalDateTime subtaskStartTime = LocalDateTime.parse(subtask.getStartTime(), formatter);
