@@ -7,18 +7,18 @@ public class Subtask extends Task {
     private Integer epicsId;
     private TasksType type = TasksType.SUBTASK;
 
-    public Subtask(String name, String description, TaskStatus taskStatus, Integer epicId) {
-        super(name, description, taskStatus);
+    public Subtask(String name, String description, TaskStatus taskStatus, Integer epicId, String startTime, int duration) {
+        super(name, description, taskStatus, startTime, duration);
         this.epicsId = epicId;
     }
 
-    public Subtask(int id, String name, String description, TaskStatus taskStatus, Integer epicId) {
-        super(id, name, description, taskStatus);
+    public Subtask(int id, String name, String description, TaskStatus taskStatus, Integer epicId, String startTime, int duration) {
+        super(id, name, description, taskStatus, startTime, duration);
         this.epicsId = epicId;
     }
 
-    public Subtask(int id, TasksType type, String name, String description, TaskStatus taskStatus, Integer epicId) {
-        super(id, name, description, taskStatus);
+    public Subtask(int id, TasksType type, String name, String description, TaskStatus taskStatus, Integer epicId, String startTime, int duration) {
+        super(id, name, description, taskStatus, startTime, duration);
         this.type = type;
         this.epicsId = epicId;
     }
