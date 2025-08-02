@@ -5,9 +5,7 @@ import com.sun.net.httpserver.HttpServer;
 import com.yandex.hw.manager.Managers;
 import com.yandex.hw.manager.tasks.TaskManager;
 
-import com.yandex.hw.server.handles.EpicsHandler;
-import com.yandex.hw.server.handles.SubtaskHandler;
-import com.yandex.hw.server.handles.TasksHandler;
+import com.yandex.hw.server.handles.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +21,8 @@ public class HttpTaskServer {
         httpServer.createContext("/tasks", new TasksHandler(taskManager));
         httpServer.createContext("/epics", new EpicsHandler(taskManager));
         httpServer.createContext("/subtasks", new SubtaskHandler(taskManager));
+        httpServer.createContext("/history", new HistoryHandler(taskManager));
+        httpServer.createContext("/prioritized", new PriorityHandler(taskManager));
         httpServer.start();
 
 
