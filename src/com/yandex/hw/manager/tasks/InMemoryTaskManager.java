@@ -35,7 +35,6 @@ public class InMemoryTaskManager implements TaskManager {
             epics.put(epic.getId(), epic);
         } else if (task instanceof Subtask subtask) {
             if (checkOverlapTime(subtask)) {
-                //   throw new IllegalArgumentException("Перекрытия по времени");
                 return false;
             } else {
                 subtask.setId(getNewId());
