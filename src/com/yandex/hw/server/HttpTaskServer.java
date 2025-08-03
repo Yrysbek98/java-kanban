@@ -2,14 +2,11 @@ package com.yandex.hw.server;
 
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpServer;
 import com.yandex.hw.manager.Managers;
 import com.yandex.hw.manager.tasks.TaskManager;
 
-import com.yandex.hw.model.Task;
 import com.yandex.hw.server.handles.*;
-import com.yandex.hw.service.TaskStatus;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +23,7 @@ public class HttpTaskServer {
         this.taskManager = taskManager;
     }
 
-        public void start() throws IOException {
+    public void start() throws IOException {
         if (httpServer != null) {
             throw new IllegalStateException("Сервер уже запущен");
         }
