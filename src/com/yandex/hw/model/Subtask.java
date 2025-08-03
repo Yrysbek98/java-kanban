@@ -1,25 +1,27 @@
 package com.yandex.hw.model;
 
+import com.google.gson.annotations.Expose;
 import com.yandex.hw.service.TaskStatus;
 import com.yandex.hw.service.TasksType;
 
 public class Subtask extends Task {
+    @Expose
     private Integer epicsId;
-    private TasksType type = TasksType.SUBTASK;
 
     public Subtask(String name, String description, TaskStatus taskStatus, Integer epicId, String startTime, int duration) {
         super(name, description, taskStatus, startTime, duration);
         this.epicsId = epicId;
+        this.type = TasksType.SUBTASK;
     }
 
     public Subtask(int id, String name, String description, TaskStatus taskStatus, Integer epicId, String startTime, int duration) {
         super(id, name, description, taskStatus, startTime, duration);
         this.epicsId = epicId;
+        this.type = TasksType.SUBTASK;
     }
 
     public Subtask(int id, TasksType type, String name, String description, TaskStatus taskStatus, Integer epicId, String startTime, int duration) {
-        super(id, name, description, taskStatus, startTime, duration);
-        this.type = type;
+        super(id, type, name, description, taskStatus, epicId, startTime, duration);
         this.epicsId = epicId;
     }
 

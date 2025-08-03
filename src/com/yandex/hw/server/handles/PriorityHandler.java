@@ -8,9 +8,7 @@ import com.yandex.hw.server.BaseHttpHandler;
 import com.yandex.hw.service.Endpoint;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 public class PriorityHandler extends BaseHttpHandler implements HttpHandler {
     private final TaskManager taskManager;
@@ -22,26 +20,27 @@ public class PriorityHandler extends BaseHttpHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
-        if (endpoint == Endpoint.GET_PRIORITIZED){
+        if (endpoint == Endpoint.GET_PRIORITIZED) {
             try {
                 TreeSet<Task> getTasks = taskManager.getPrioritizedTasks();
                 if (getTasks.isEmpty()) {
                     sendNotFound(exchange, "Список  пустой");
                 } else {
-                    String response = getTasks.stream().map(Task::toString).collect(Collectors.joining("\n"));
-                    sendText(exchange, 200, response);
+                    sendText(exchange, getTasks);
                 }
             } catch (Exception e) {
                 sendServerError(exchange);
             }
         }
     }
+
     private Endpoint getEndpoint(String requestPath, String requestMethod) {
         String[] pathParts = requestPath.split("/");
         if (pathParts.length == 2 && "prioritized".equals(pathParts[1]) && requestMethod.equals("GET")) {
             return Endpoint.GET_PRIORITIZED;
 
-        };
+        }
+        ;
         return Endpoint.UNKNOWN;
     }
 }

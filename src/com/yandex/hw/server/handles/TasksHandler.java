@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class TasksHandler extends BaseHttpHandler implements HttpHandler {
     private final TaskManager taskManager;
@@ -49,8 +48,7 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
             if (getTasks.isEmpty()) {
                 sendNotFound(exchange, "Список задач пустой");
             } else {
-                String response = getTasks.stream().map(Task::toString).collect(Collectors.joining("\n"));
-                sendText(exchange, 200, response);
+                sendText(exchange, getTasks);
             }
         } catch (Exception e) {
             sendServerError(exchange);
@@ -63,8 +61,12 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
             InputStream inputStream = exchange.getRequestBody();
             String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
             Task task = gson.fromJson(body, Task.class);
-            taskManager.addTask(task);
-            sendTextNewTask(exchange, "Задача добавлена");
+            boolean added = taskManager.addTask(task);
+            if (!added) {
+                sendHasInteractions(exchange);
+                return;
+            }
+            sendTextNewTask(exchange);
         } catch (Exception e) {
             sendServerError(exchange);
         }
@@ -84,9 +86,7 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
                 return;
             }
             Task getTask = task.get();
-            Gson gson = new Gson();
-            String response = gson.toJson(getTask);
-            sendText(exchange, 200, response);
+            sendText(exchange, getTask);
         } catch (Exception e) {
             sendServerError(exchange);
         }
@@ -106,7 +106,7 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
                 return;
             }
             taskManager.deleteTaskById(taskId);
-            sendText(exchange, 200, "Успешно удалили задачу");
+            sendText(exchange, "Успешно удалили задачу");
         } catch (Exception e) {
             sendServerError(exchange);
         }

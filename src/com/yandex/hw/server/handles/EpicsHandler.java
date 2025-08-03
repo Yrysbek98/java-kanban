@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
     private final TaskManager taskManager;
@@ -50,8 +50,7 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
             if (getEpics.isEmpty()) {
                 sendNotFound(exchange, "Список задач пустой");
             } else {
-                String response = getEpics.stream().map(Epic::toString).collect(Collectors.joining("\n"));
-                sendText(exchange, 200, response);
+                sendText(exchange, getEpics);
             }
         } catch (Exception e) {
             sendServerError(exchange);
@@ -65,7 +64,7 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
             String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
             Epic epic = gson.fromJson(body, Epic.class);
             taskManager.addTask(epic);
-            sendTextNewTask(exchange, "Задача добавлена");
+            sendTextNewTask(exchange);
         } catch (Exception e) {
             sendServerError(exchange);
         }
@@ -76,18 +75,16 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
             String path = exchange.getRequestURI().getPath();
             String[] pathParts = path.split("/");
             int epicId = Integer.parseInt(pathParts[2]);
+
             Optional<Epic> epic = taskManager.getAllTask(Epic.class).stream()
                     .filter(p -> p.getId() == epicId)
                     .findFirst();
 
             if (epic.isEmpty()) {
-                sendNotFound(exchange, "Пост с id " + epicId + " не найден");
+                sendNotFound(exchange, "Подзадача с id " + epicId + " не найдена");
                 return;
             }
-            Epic getEpic = epic.get();
-            Gson gson = new Gson();
-            String response = gson.toJson(getEpic);
-            sendText(exchange, 200, response);
+            sendText(exchange, epic.get());
         } catch (Exception e) {
             sendServerError(exchange);
         }
@@ -107,7 +104,7 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
                 return;
             }
             taskManager.deleteTaskById(epicId);
-            sendText(exchange, 200, "Успешно удалили задачу");
+            sendText(exchange, "Успешно удалили задачу");
         } catch (Exception e) {
             sendServerError(exchange);
         }
@@ -123,7 +120,7 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
                 sendNotFound(exchange, "Список задач пустой");
             } else {
                 String arrayOfSubtask = getEpics.toString();
-                sendText(exchange, 200, arrayOfSubtask);
+                sendText(exchange, arrayOfSubtask);
             }
         } catch (Exception e) {
             sendServerError(exchange);

@@ -1,19 +1,29 @@
 package com.yandex.hw.model;
 
+import com.google.gson.annotations.Expose;
 import com.yandex.hw.service.TaskStatus;
 import com.yandex.hw.service.TasksType;
 
 import java.util.Objects;
 
 public class Task {
+    @Expose
     private int id;
+    @Expose
     private String name;
+    @Expose
     private String description;
+    @Expose
     private TaskStatus taskStatus;
-    private TasksType type = TasksType.TASK;
+    @Expose
+    protected TasksType type;
+    @Expose
     private Integer epicId;
+    @Expose
     private String startTime;
+    @Expose
     private int duration;
+
 
     public Task(String name, String description, TaskStatus taskStatus, String startTime, int duration) {
         this.name = name;
@@ -21,6 +31,7 @@ public class Task {
         this.taskStatus = taskStatus;
         this.startTime = startTime;
         this.duration = duration;
+        this.type = TasksType.TASK;
     }
 
     public Task(Integer id, String name, String description, TaskStatus taskStatus, String startTime, int duration) {
@@ -30,6 +41,7 @@ public class Task {
         this.taskStatus = taskStatus;
         this.startTime = startTime;
         this.duration = duration;
+        this.type = TasksType.TASK;
     }
 
     public Task(Integer id, TasksType type, String name, String description, TaskStatus taskStatus, Integer epicId, String startTime, int duration) {
@@ -101,7 +113,7 @@ public class Task {
     }
 
     public TasksType getType() {
-        return type;
+        return type != null ? type : TasksType.TASK;
     }
 
     public Integer getEpicId() {

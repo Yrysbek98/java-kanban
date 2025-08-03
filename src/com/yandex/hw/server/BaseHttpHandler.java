@@ -2,34 +2,37 @@ package com.yandex.hw.server;
 
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 public class BaseHttpHandler {
     private static final Gson gson = new Gson(); // или new GsonBuilder().setPrettyPrinting().create();
     private static final java.nio.charset.Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
-    protected void sendText(HttpExchange h, int statusCode, String message) throws IOException {
-        String json = gson.toJson(Map.of("error", message));
-        byte[] resp = json.getBytes(StandardCharsets.UTF_8);
 
-        h.getResponseHeaders().add("Content-Type", "application/json; charset=utf-8");
-        h.sendResponseHeaders(statusCode, resp.length);
+    protected void sendText(HttpExchange h, Object object) throws IOException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String json = gson.toJson(object);  // Сериализуем объект в JSON
+
+        h.getResponseHeaders().set("Content-Type", "application/json");
+        h.sendResponseHeaders(200, json.getBytes().length);
 
         try (OutputStream os = h.getResponseBody()) {
-            os.write(resp);
+            os.write(json.getBytes(StandardCharsets.UTF_8));
         }
     }
-    protected void sendTextNewTask(HttpExchange h, String text) throws IOException {
-        byte[] resp = text.getBytes(StandardCharsets.UTF_8);
+
+    protected void sendTextNewTask(HttpExchange h) throws IOException {
+        byte[] resp = "Задача добавлена".getBytes(StandardCharsets.UTF_8);
         h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         h.sendResponseHeaders(201, resp.length);
         h.getResponseBody().write(resp);
         h.close();
     }
+
     protected void sendNotFound(HttpExchange h, String message) throws IOException {
         String json = "{\"error\":\"" + message + "\"}";
         byte[] resp = json.getBytes(StandardCharsets.UTF_8);
@@ -41,8 +44,9 @@ public class BaseHttpHandler {
             os.write(resp);
         }
     }
-    protected void sendHasInteractions(HttpExchange h, String message) throws IOException {
-        String json = "{\"error\":\"" + message + "\"}";
+
+    protected void sendHasInteractions(HttpExchange h) throws IOException {
+        String json = "{\"error\":\"" + "Перекрытие по времени" + "\"}";
         byte[] resp = json.getBytes(StandardCharsets.UTF_8);
 
         h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
@@ -53,6 +57,7 @@ public class BaseHttpHandler {
         }
 
     }
+
     protected void sendServerError(HttpExchange h) throws IOException {
         String json = "{\"error\":\"" + "Ошибка при обработке запроса" + "\"}";
         byte[] resp = json.getBytes(StandardCharsets.UTF_8);

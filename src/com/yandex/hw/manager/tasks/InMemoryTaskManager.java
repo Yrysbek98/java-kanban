@@ -23,7 +23,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HistoryManager historyManager = Managers.getDefaultHistoryManager();
 
     @Override
-    public <T extends Task> void addTask(T task) {
+    public <T extends Task> boolean addTask(T task) {
         if (task == null) {
             throw new IllegalArgumentException("Task не может быть null");
         }
@@ -35,9 +35,14 @@ public class InMemoryTaskManager implements TaskManager {
             epics.put(epic.getId(), epic);
         } else if (task instanceof Subtask subtask) {
             if (checkOverlapTime(subtask)) {
-                throw new IllegalArgumentException("Перекрытия по времени");
+                //   throw new IllegalArgumentException("Перекрытия по времени");
+                return false;
             } else {
                 subtask.setId(getNewId());
+                Integer epicId = subtask.getEpicId();
+                if (epicId == null) {
+                    throw new IllegalArgumentException("У Subtask не задан epicId");
+                }
                 Epic epic = epics.get(subtask.getEpicId());
                 if (epic == null) {
                     throw new IllegalArgumentException("Epic с id=" + subtask.getEpicId() + " не найден");
@@ -58,7 +63,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
         } else {
             if (checkOverlapTime(task)) {
-                throw new IllegalArgumentException("Перекрытия по времени");
+                return false;
             } else {
                 task.setId(getNewId());
                 tasks.put(task.getId(), task);
@@ -66,6 +71,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
 
         }
+        return true;
     }
 
     @Override
@@ -315,16 +321,24 @@ public class InMemoryTaskManager implements TaskManager {
                 .filter(t -> t.getId() != task.getId())
                 .filter(t -> {
                     if (task instanceof Subtask subtask && t instanceof Epic epic) {
-                        return subtask.getEpicId() != epic.getId();
+                        Integer subEpicId = subtask.getEpicId();
+                        if (subEpicId == null) return true;
+                        return !subEpicId.equals(epic.getId());
                     }
                     if (task instanceof Epic epic && t instanceof Subtask subtask) {
-                        return subtask.getEpicId() != epic.getId();
+                        Integer subEpicId = subtask.getEpicId();
+                        if (subEpicId == null) return true;
+                        return !subEpicId.equals(epic.getId());
                     }
                     return true;
                 })
                 .anyMatch(t -> {
-                    LocalDateTime otherStart = LocalDateTime.parse(t.getStartTime(), formatter);
+                    String tStartTime = t.getStartTime();
+                    if (tStartTime == null) return false;
+
+                    LocalDateTime otherStart = LocalDateTime.parse(tStartTime, formatter);
                     LocalDateTime otherEnd = getEndTime(t);
+
                     return !(end.isBefore(otherStart) || start.isAfter(otherEnd));
                 });
     }

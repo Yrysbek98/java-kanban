@@ -5,19 +5,21 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.yandex.hw.manager.tasks.TaskManager;
 import com.yandex.hw.model.Subtask;
-import com.yandex.hw.model.Task;
 import com.yandex.hw.server.BaseHttpHandler;
 import com.yandex.hw.service.Endpoint;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
     private final TaskManager taskManager;
+    private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     public SubtaskHandler(TaskManager taskManager) {
         this.taskManager = taskManager;
@@ -44,12 +46,11 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
 
     private void handleGetSubtasks(HttpExchange exchange) throws IOException {
         try {
-            ArrayList<Subtask> getSubtasks = taskManager.getAllTask(Subtask.class);
-            if (getSubtasks.isEmpty()) {
-                sendNotFound(exchange, "Список задач пустой");
+            ArrayList<Subtask> subtasks = taskManager.getAllTask(Subtask.class);
+            if (subtasks.isEmpty()) {
+                sendNotFound(exchange, "Список подзадач пуст");
             } else {
-                String response = getSubtasks.stream().map(Subtask::toString).collect(Collectors.joining("\n"));
-                sendText(exchange, 200, response);
+                sendText(exchange, subtasks);
             }
         } catch (Exception e) {
             sendServerError(exchange);
@@ -62,8 +63,12 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
             InputStream inputStream = exchange.getRequestBody();
             String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
             Subtask subtask = gson.fromJson(body, Subtask.class);
-            taskManager.addTask(subtask);
-            sendTextNewTask(exchange, "Задача добавлена");
+            boolean added = taskManager.addTask(subtask);
+            if (!added) {
+                sendHasInteractions(exchange);
+                return;
+            }
+            sendTextNewTask(exchange);
         } catch (Exception e) {
             sendServerError(exchange);
         }
@@ -74,22 +79,19 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
             String path = exchange.getRequestURI().getPath();
             String[] pathParts = path.split("/");
             int subtaskId = Integer.parseInt(pathParts[2]);
+
             Optional<Subtask> subtask = taskManager.getAllTask(Subtask.class).stream()
                     .filter(p -> p.getId() == subtaskId)
                     .findFirst();
 
             if (subtask.isEmpty()) {
-                sendNotFound(exchange, "Пост с id " + subtaskId + " не найден");
+                sendNotFound(exchange, "Подзадача с id " + subtaskId + " не найдена");
                 return;
             }
-            Task getSubtask = subtask.get();
-            Gson gson = new Gson();
-            String response = gson.toJson(getSubtask);
-            sendText(exchange, 200, response);
+            sendText(exchange, subtask.get());
         } catch (Exception e) {
             sendServerError(exchange);
         }
-
     }
 
     private void handleDeleteSubtask(HttpExchange exchange) throws IOException {
@@ -105,7 +107,7 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
                 return;
             }
             taskManager.deleteTaskById(subtaskId);
-            sendText(exchange, 200, "Успешно удалили задачу");
+            sendText(exchange, "Успешно удалили задачу");
         } catch (Exception e) {
             sendServerError(exchange);
         }
