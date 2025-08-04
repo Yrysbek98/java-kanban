@@ -63,7 +63,7 @@ public class BaseHttpHandler {
         byte[] resp = json.getBytes(StandardCharsets.UTF_8);
 
         h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        h.sendResponseHeaders(501, resp.length);
+        h.sendResponseHeaders(500, resp.length);
 
         try (OutputStream os = h.getResponseBody()) {
             os.write(resp);
