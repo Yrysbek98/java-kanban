@@ -39,6 +39,9 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
             case DELETE_TASK:
                 handleDeleteTask(exchange);
                 break;
+            case UNKNOWN:
+                handleStatusUnknown(exchange);
+                break;
         }
     }
 
@@ -110,6 +113,10 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
         } catch (Exception e) {
             sendServerError(exchange);
         }
+    }
+
+    private void handleStatusUnknown(HttpExchange exchange) throws IOException {
+        sendNotFound(exchange, "Сервер не может найти запрошенный ресурс");
     }
 
     private Endpoint getEndpoint(String requestPath, String requestMethod) {

@@ -40,6 +40,10 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
             case DELETE_SUBTASK:
                 handleDeleteSubtask(exchange);
                 break;
+            case UNKNOWN:
+                handleStatusUnknown(exchange);
+                break;
+
         }
     }
 
@@ -111,6 +115,11 @@ public class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
             sendServerError(exchange);
         }
     }
+
+    private void handleStatusUnknown(HttpExchange exchange) throws IOException {
+        sendNotFound(exchange, "Сервер не может найти запрошенный ресурс");
+    }
+
 
     private Endpoint getEndpoint(String requestPath, String requestMethod) {
         String[] pathParts = requestPath.split("/");
