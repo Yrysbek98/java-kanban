@@ -1,11 +1,10 @@
 package com.yandex.hw.model;
 
-import com.google.gson.annotations.Expose;
+
 import com.yandex.hw.service.TaskStatus;
 import com.yandex.hw.service.TasksType;
 
 public class Subtask extends Task {
-    @Expose
     private Integer epicsId;
 
     public Subtask(String name, String description, TaskStatus taskStatus, Integer epicId, String startTime, int duration) {

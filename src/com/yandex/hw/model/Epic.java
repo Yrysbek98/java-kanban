@@ -1,13 +1,12 @@
 package com.yandex.hw.model;
 
-import com.google.gson.annotations.Expose;
+
 import com.yandex.hw.service.TaskStatus;
 import com.yandex.hw.service.TasksType;
 
 import java.util.ArrayList;
 
 public class Epic extends Task {
-    @Expose
     private ArrayList<Integer> subtaskIds;
     private transient Integer epicId;
 

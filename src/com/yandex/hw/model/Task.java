@@ -1,27 +1,19 @@
 package com.yandex.hw.model;
 
-import com.google.gson.annotations.Expose;
+
 import com.yandex.hw.service.TaskStatus;
 import com.yandex.hw.service.TasksType;
 
 import java.util.Objects;
 
 public class Task {
-    @Expose
     private int id;
-    @Expose
     private String name;
-    @Expose
     private String description;
-    @Expose
     private TaskStatus taskStatus;
-    @Expose
     protected TasksType type;
-    @Expose
     private Integer epicId;
-    @Expose
     private String startTime;
-    @Expose
     private int duration;
 
 

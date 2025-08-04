@@ -40,8 +40,7 @@ public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
         if (pathParts.length == 2 && "history".equals(pathParts[1]) && requestMethod.equals("GET")) {
             return Endpoint.GET_HISTORY;
 
-        }
-        ;
+        };
         return Endpoint.UNKNOWN;
     }
 }
