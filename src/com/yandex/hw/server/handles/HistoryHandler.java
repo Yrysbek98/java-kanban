@@ -9,7 +9,6 @@ import com.yandex.hw.service.Endpoint;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.TreeSet;
 
 
 public class HistoryHandler extends BaseHttpHandler implements HttpHandler {
