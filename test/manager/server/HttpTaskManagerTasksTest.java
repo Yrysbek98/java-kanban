@@ -84,16 +84,16 @@ public class HttpTaskManagerTasksTest {
         assertEquals(201, postResponse.statusCode(), "Не удалось создать задачу");
 
         HttpRequest deleteRequest = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks/" + 1))
+                .uri(URI.create("http://localhost:8080/tasks/" + 2))
                 .DELETE()
                 .build();
 
         HttpResponse<String> deleteResponse = client.send(deleteRequest, HttpResponse.BodyHandlers.ofString());
-        assertEquals(404, deleteResponse.statusCode(), "Не удалось удалить задачу");
+        assertEquals(200, deleteResponse.statusCode(), "Не удалось удалить задачу");
 
 
         HttpRequest getRequest = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tasks/" + 1))
+                .uri(URI.create("http://localhost:8080/tasks/" + 2))
                 .GET()
                 .build();
 
