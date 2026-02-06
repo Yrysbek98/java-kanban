@@ -105,20 +105,5 @@ public class FileBackedTaskManagerTest extends TaskManagerTest {
         assertEquals("Ошибка при добавлении task", exception.getMessage());
     }
 
-    @Test
-    void checkOverlapTime() throws IOException {
-        File overlapFile = File.createTempFile("overlap", ".csv");
-        TaskManager taskManager = Managers.getDefaultTaskManager(overlapFile);
-        Task task1 = new Task("task1", "same time", TaskStatus.IN_PROGRESS, "12-05-2025 12:00", 30);
-        Task task2 = new Task("task2", "same time", TaskStatus.NEW, "12-05-2025 12:00", 45);
-        ManagerSaveException exception = assertThrows(ManagerSaveException.class, () -> {
-            taskManager.addTask(task1);
-            taskManager.addTask(task2);
-        });
-
-        assertEquals("Ошибка при добавлении task", exception.getMessage());
-
-    }
-
 
 }

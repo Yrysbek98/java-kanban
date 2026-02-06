@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.TreeSet;
 
 public interface TaskManager {
-    <T extends Task> void addTask(T task);
+    <T extends Task> boolean addTask(T task);
 
     <T extends Task> void updateTask(T task);
 

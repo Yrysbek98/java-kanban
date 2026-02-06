@@ -64,13 +64,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
 
     @Override
-    public <T extends Task> void addTask(T task) {
+    public <T extends Task> boolean addTask(T task) {
         try {
-            super.addTask(task);
-            save();
+            boolean added = super.addTask(task);
+            if (added) {
+                save();
+            }
+            return added;
         } catch (Exception e) {
             throw new ManagerSaveException("Ошибка при добавлении task", e);
         }
+
     }
 
     @Override

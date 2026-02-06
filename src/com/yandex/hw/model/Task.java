@@ -1,5 +1,6 @@
 package com.yandex.hw.model;
 
+
 import com.yandex.hw.service.TaskStatus;
 import com.yandex.hw.service.TasksType;
 
@@ -10,10 +11,11 @@ public class Task {
     private String name;
     private String description;
     private TaskStatus taskStatus;
-    private TasksType type = TasksType.TASK;
+    protected TasksType type;
     private Integer epicId;
     private String startTime;
     private int duration;
+
 
     public Task(String name, String description, TaskStatus taskStatus, String startTime, int duration) {
         this.name = name;
@@ -21,6 +23,7 @@ public class Task {
         this.taskStatus = taskStatus;
         this.startTime = startTime;
         this.duration = duration;
+        this.type = TasksType.TASK;
     }
 
     public Task(Integer id, String name, String description, TaskStatus taskStatus, String startTime, int duration) {
@@ -30,6 +33,7 @@ public class Task {
         this.taskStatus = taskStatus;
         this.startTime = startTime;
         this.duration = duration;
+        this.type = TasksType.TASK;
     }
 
     public Task(Integer id, TasksType type, String name, String description, TaskStatus taskStatus, Integer epicId, String startTime, int duration) {
@@ -101,7 +105,7 @@ public class Task {
     }
 
     public TasksType getType() {
-        return type;
+        return type != null ? type : TasksType.TASK;
     }
 
     public Integer getEpicId() {
